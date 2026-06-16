@@ -1,0 +1,1 @@
+export { PopapNewCard } from "./PopapNewCard";
