@@ -12,7 +12,7 @@ import {
 } from "./header.styled";
 import { Container } from "../../globalStyles";
 import { Link } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { DarkContext } from "../../context/Dark/DarkContext";
 
 export const Header = () => {

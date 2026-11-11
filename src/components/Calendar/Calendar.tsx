@@ -7,18 +7,20 @@ import {
 import "react-day-picker/dist/style.css";
 
 interface CalendarProps {
-  selectedDate: Date;
+  selectedDate: Date | undefined;
   setSelectedDate: (date: Date | undefined) => void;
   isEdited?: boolean;
 }
 
 export function Calendar(props: CalendarProps) {
   const { selectedDate, setSelectedDate, isEdited = false } = props;
-  const localDate = new Date(selectedDate).toLocaleDateString("ru-RU", {
-    year: "2-digit",
-    day: "2-digit",
-    month: "2-digit",
-  });
+  const localDate = selectedDate
+    ? new Date(selectedDate).toLocaleDateString("ru-RU", {
+        year: "2-digit",
+        day: "2-digit",
+        month: "2-digit",
+      })
+    : "";
 
   let footer = <CalendarText>Выберите срок исполнения</CalendarText>;
   if (selectedDate) {

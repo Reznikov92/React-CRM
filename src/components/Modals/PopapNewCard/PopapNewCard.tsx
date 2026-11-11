@@ -23,26 +23,28 @@ import { useContext, useState } from "react";
 import { Error as ErrorComponent } from "../../Authorization/Authorization.styled";
 import { Calendar } from "../../Calendar";
 import { TasksContext } from "../../../context/Tasks/TasksContext";
+import type { ITaskInfo, ITypeTopic } from "../../../types";
 
 export const PopapNewCard = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [taskInfo, setTaskInfo] = useState({
+  const [taskInfo, setTaskInfo] = useState<ITaskInfo>({
     title: "",
     topic: "Web Design",
     description: "",
+    date: "",
   });
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
-  const [activeTopic, setActiveTopic] = useState("Web Design");
+  const [activeTopic, setActiveTopic] = useState<ITypeTopic>("Web Design");
   const arrayTopic = [
     { name: "Web Design", className: "_orange" },
     { name: "Research", className: "_green" },
     { name: "Copywriting", className: "_purple" },
-  ];
-  const { submitUserData } = useContext(TasksContext);
-  function handleActiveTopic(activeTopicName: string) {
+  ] satisfies { name: ITypeTopic; className: string }[];
+  const { submitUserData } = useContext(TasksContext)!;
+  function handleActiveTopic(activeTopicName: ITypeTopic) {
     setActiveTopic(activeTopicName);
     setTaskInfo((prev) => ({ ...prev, topic: activeTopicName }));
   }
@@ -54,9 +56,9 @@ export const PopapNewCard = () => {
     const { name, value } = event.target;
     setTaskInfo((prev) => ({ ...prev, [name]: value }));
   }
-  function handleChangeDate(date: string) {
+  function handleChangeDate(date: Date | undefined) {
     setSelectedDate(date);
-    setTaskInfo((prev) => ({ ...prev, date }));
+    setTaskInfo((prev) => ({ ...prev, date: date ? date.toISOString() : "" }));
   }
 
   return (

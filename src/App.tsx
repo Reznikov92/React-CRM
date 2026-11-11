@@ -21,7 +21,7 @@ function App() {
     getTasks().then((body) => {
       setTasks(body.tasks);
     });
-  }, []);
+  }, [setTasks]);
 
   return (
     <>

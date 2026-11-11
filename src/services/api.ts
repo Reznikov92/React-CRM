@@ -1,5 +1,7 @@
 // const registerAxios = axios.create({ baseURL: baseUrl + "kanban" });
 import axios from "axios";
+import type { ITypeTopic } from "../types";
+
 interface IRegData extends IAuthData {
   name: string;
 }
@@ -8,8 +10,10 @@ interface IAuthData {
   password: string;
 }
 export interface ITaskData {
+  _id: string;
+  userId: string;
   title: string;
-  topic: string;
+  topic: ITypeTopic;
   status: string;
   description: string;
   date: string;

@@ -21,27 +21,26 @@ import { CategoriesTheme } from "../PopapNewCard/popupNewCard.styled";
 import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
-  deleteTasks,
-  editTasks,
   getTask,
   type ITaskData,
 } from "../../../services/api";
 import { Calendar } from "../../Calendar";
 import { TasksContext } from "../../../context/Tasks/TasksContext";
+import type { ITypeTopic } from "../../../types";
 
 export const PopBrowse = () => {
   const { deleteCard, saveTask } = useContext(TasksContext)!;
-  const [activeTopic, setActiveTopic] = useState<string | null>(null);
+  const [activeTopic, setActiveTopic] = useState<ITypeTopic | null>(null);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [activeStatus, setActiveStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const arrayTopic = [
     { name: "Web Design", className: "_orange" },
     { name: "Research", className: "_green" },
     { name: "Copywriting", className: "_purple" },
-  ];
+  ] satisfies { name: ITypeTopic; className: string }[];
   const arrayStatus = [
     "Без статуса",
     "Нужно сделать",
@@ -57,18 +56,19 @@ export const PopBrowse = () => {
       getTask(id).then((body) => {
         setActiveTopic(body.task.topic);
         setActiveStatus(body.task.status);
-        setSelectedDate(body.task.date);
+        setSelectedDate(body.task.date ? new Date(body.task.date) : undefined);
         setTask(body.task);
         console.log(body);
       });
     }
-  }, []);
+  }, [id]);
   function changeDescription(event: React.ChangeEvent<HTMLTextAreaElement>) {
     const { name, value } = event.target;
     if (value && name) {
-      setTask((prev) => ({ ...prev, [name]: value }));
+      setTask((prev) => (prev ? { ...prev, [name]: value } : null));
     }
   }
+
 
   return (
     <PopBrowseStyled id="popBrowse">
@@ -175,14 +175,15 @@ export const PopBrowse = () => {
               <PopBrowseBtnEdit>
                 <div className="btn-group">
                   <button
-                    disabled={loading}
+                    disabled={loading || !task}
                     className="btn-edit__edit _btn-bg _hover01"
                     onClick={() => {
+                      if (!task) return;
                       saveTask(id, setLoading, {
                         ...task,
                         status: activeStatus as string,
-                        topic: activeTopic as string,
-                        date: selectedDate as string,
+                        topic: activeTopic ?? task.topic,
+                        date: selectedDate ? selectedDate.toISOString() : "",
                       });
                     }}
                   >
